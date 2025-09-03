@@ -458,7 +458,7 @@ const SignUp = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${baseUrl}/verify-email/`, {
+      const response = await fetch(`${baseUrl}/users/verify-email/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
