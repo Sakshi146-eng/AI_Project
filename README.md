@@ -651,8 +651,6 @@ SOFTWARE.
 
 ---
 
-**Built with ❤️ by the InterXAI Team**
-
 *Revolutionizing recruitment through AI-powered intelligent interviews*
 
 ---
