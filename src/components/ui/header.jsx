@@ -113,10 +113,10 @@ const baseUrl=import.meta.env.VITE_API_URL;
                 </>
               ) : orgId ? (
                 <a
-                  // href={`/org-dashboard/${orgId}`}
+                  href={`/org-dashboard/${orgId}`}
                   className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
                 >
-                  About
+                 go to organization
                 </a>
               ) : (
                 <a

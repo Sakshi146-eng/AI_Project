@@ -36,7 +36,7 @@ export default function AppRoutes() {
       </EnhancedProctoredRouteWrapper>
     } 
   />
-{/*   
+  
   <Route 
     path="/dsa-interview-platform/:sessionId" 
     element={
@@ -44,7 +44,7 @@ export default function AppRoutes() {
         <DSAInterviewPlatform />
       </EnhancedProctoredRouteWrapper>
     } 
-  /> */}
+  />
 
     
 
