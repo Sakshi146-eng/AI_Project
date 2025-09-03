@@ -1759,7 +1759,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Clock, Play, Send, CheckCircle, XCircle, Code, AlertCircle, Loader } from 'lucide-react';
 import { getAuthToken, fetchWithToken } from '../utils/handleToken';
 import { useParams, useNavigate } from 'react-router-dom';
-
+const base_url=import.meta.env.VITE_API_URL;
 const TIME_LIMIT = 30 * 60; // 30 minutes in seconds
 const LANGUAGES = ['Python', 'C++', 'Java'];
 const CODE_TEMPLATES = {
@@ -1880,10 +1880,10 @@ const DSAInterviewPlatform = () => {
       setError('Authentication required');
       return [];
     }
-
+    const base_url= import.meta.env.VITE_API_URL;
     try {
       const data = await fetchWithToken(
-        `http://localhost:8000/api/interview/get-dsa-questions/${sessionId}/`,
+        `${base_url}/interview/get-dsa-questions/${sessionId}/`,
         token,
         navigate,
       );
@@ -2072,7 +2072,7 @@ const DSAInterviewPlatform = () => {
       };
 
       const response = await fetchWithToken(
-        `http://localhost:8000/api/interview/add-dsa-scores/${sessionId}/${question.dsaTopicId}/`,
+        `${base_url}/interview/add-dsa-scores/${sessionId}/${question.dsaTopicId}/`,
         token,
         navigate,
         'POST',
