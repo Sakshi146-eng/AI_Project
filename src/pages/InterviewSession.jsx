@@ -538,7 +538,8 @@ const InterviewSession = () => {
   // ✅ Redirect to DasInterViewPlatform after completion
   useEffect(() => {
     if (completed && sessionId) {
-      navigate(`/dsa-interview-platform/${sessionId}`);
+      // navigate(`/dsa-interview-platform/${sessionId}`);
+      navigate("/");
     }
   }, [completed, sessionId]);
 

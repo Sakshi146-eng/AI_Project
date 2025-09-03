@@ -420,7 +420,7 @@ const SignUp = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${baseUrl}/register/`, {
+      const response = await fetch(`${baseUrl}/users/register/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
