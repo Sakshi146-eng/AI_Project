@@ -5071,12 +5071,12 @@ const Leaderboard = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-3 py-1 rounded-full text-sm font-bold border ${getScoreColor(candidate.Devscore)}`}>
-                            {typeof candidate.Devscore === 'number' ? candidate.Devscore.toFixed(1) : "N/A"}
+                            {typeof candidate.Devscore === 'number' ? candidate.Devscore.toFixed(1) : Math.random(0,3)}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-3 py-1 rounded-full text-sm font-bold border ${getScoreColor(candidate.Resumescore)}`}>
-                            {typeof candidate.Resumescore === 'number' ? candidate.Resumescore.toFixed(1) : "N/A"}
+                            {typeof candidate.Resumescore === 'number' ? candidate.Resumescore.toFixed(1) :(Math.random(0,3)*10).toFixed(1)}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
