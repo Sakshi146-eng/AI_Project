@@ -116,7 +116,7 @@ const baseUrl=import.meta.env.VITE_API_URL;
                   href={`/org-dashboard/${orgId}`}
                   className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
                 >
-                  Go to Organization
+                 go to organization
                 </a>
               ) : (
                 <a
