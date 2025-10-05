@@ -13,6 +13,7 @@ import InterviewSession from "../pages/InterviewSession";
 import Leaderboard from '../pages/Leaderboard';
 import DSAInterviewPlatform from '../pages/DasInterViewPlatForm';
 import EnhancedProctoredRouteWrapper from "./ProtectorRouteWrapper";
+import ResumeQuestionSession from "../pages/ResumeQuestionSession";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -29,14 +30,20 @@ export default function AppRoutes() {
       <Route path="/applications/:id" element={<Application />} />
       <Route path="/leaderboard/:id" element={<Leaderboard />} />
   <Route 
-    path="/interview/start/:interviewId" 
-    element={
-      <EnhancedProctoredRouteWrapper>
-        <InterviewSession />
-      </EnhancedProctoredRouteWrapper>
-    } 
-  />
-  
+  path="/interview/start/:interviewId" 
+  element={
+    <EnhancedProctoredRouteWrapper>
+      <InterviewSession />
+    </EnhancedProctoredRouteWrapper>
+  } 
+/>
+  <Route
+  path="/resume-platform/:sessionId"
+  element={
+    <EnhancedProctoredRouteWrapper>
+      <ResumeQuestionSession/>
+    </EnhancedProctoredRouteWrapper>
+  }/>
   <Route 
     path="/dsa-interview-platform/:sessionId" 
     element={

@@ -6,7 +6,7 @@ import { getAuthToken } from '../utils/handleToken';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast} from 'react-toastify';
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const baseUrl = import.meta.env.VITE_API_URL;
 
 // Form Container Component
@@ -284,9 +284,9 @@ const QuestionsConfig = ({ onNext, onBack, formData, setFormData }) => {
     }));
   };
 
-  const generateQuestionsWithGemini = async () => {
-    if (!GEMINI_API_KEY) {
-      toast.error('Gemini API key not configured');
+  const generateQuestionsWithGroq = async () => {
+    if (!GROQ_API_KEY) {
+      toast.error('Groq API key not configured');
       return;
     }
 
@@ -310,23 +310,20 @@ Example format:
   }
 ]`;
 
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: prompt
-            }]
+          model: 'llama-3.3-70b-versatile',
+          messages: [{
+            role: 'user',
+            content: prompt
           }],
-          generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 2048,
-          }
+          temperature: 0.7,
+          max_tokens: 2048,
         })
       });
 
@@ -336,11 +333,11 @@ Example format:
 
       const data = await response.json();
       
-      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-        throw new Error('Invalid response format from Gemini API');
+      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+        throw new Error('Invalid response format from Groq API');
       }
       
-      const generatedText = data.candidates[0].content.parts[0].text;
+      const generatedText = data.choices[0].message.content;
       
       let cleanedText = generatedText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       
@@ -438,7 +435,7 @@ Example format:
             <h3 className="text-xl font-semibold text-gray-900">Development Questions ({formData.Dev}%)</h3>
             <div className="flex space-x-3">
               <button
-                onClick={generateQuestionsWithGemini}
+                onClick={generateQuestionsWithGroq}
                 disabled={isGenerating}
                 className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-2xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 disabled:opacity-50 flex items-center space-x-2 shadow-lg"
               >
