@@ -870,6 +870,15 @@ Answer questions about this candidate's interview performance, application detai
                             
                           </div>
                         </div>
+                      </div>
+                    ) : (
+                      <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 text-center shadow-sm">
+                        <Star className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-500 text-lg">No strengths available.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                         {/* Feedback */}
                         {selectedCandidate.feedback ? (
@@ -1540,7 +1549,9 @@ Answer questions about this candidate's interview performance, application detai
       </div>
       <Footer />
     </div>
-  );
+    <Footer />
+  </div>
+);
 };
 
 export default Leaderboard;

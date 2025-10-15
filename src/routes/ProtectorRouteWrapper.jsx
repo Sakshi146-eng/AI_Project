@@ -3438,8 +3438,8 @@ const ProctoredContent = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const PINATA_API_KEY = "8a9b5a93c77cc42ca922";
-  const PINATA_SECRET_KEY = "4d3a76be82bbdd5d32f13b480930d966c16d19f7a1e5d419dd1c939eac2e80c6";
+  const PINATA_API_KEY =import.meta.env.PINATA_API_KEY;
+  const PINATA_SECRET_KEY =import.meta.env.PINATA_SECRET_KEY;
 
   const getSessionInfo = () => {
     if (location.pathname.includes('/interview/start/')) {
@@ -3566,6 +3566,9 @@ const ProctoredContent = ({ children }) => {
   const cleanup = () => {
     if (monitoringIntervalRef.current) {
       clearInterval(monitoringIntervalRef.current);
+      if (monitoringIntervalRef.statusInterval) {
+        clearInterval(monitoringIntervalRef.statusInterval);
+      }
     }
     if (cameraCheckRef.current) {
       clearInterval(cameraCheckRef.current);

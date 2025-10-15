@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { handleToken } from '../utils/handleToken';
 import MessageNotification from '../components/ui/MessageNotification';
 
-const baseUrl = 'http://localhost:8000/api/users/';
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const OwlMascot = ({ showPassword, isPasswordFocused }) => (
   <div className="mb-8">
@@ -295,7 +295,7 @@ const Login = () => {
     }
     setIsLoading(true);
     try {
-      const res = await fetch(`${baseUrl}forgot-password/`, {
+      const res = await fetch(`${baseUrl}/forgot-password/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: user }),
@@ -320,7 +320,7 @@ const Login = () => {
     }
     setIsLoading(true);
     try {
-      const res = await fetch(`${baseUrl}verify-reset-code/`, {
+      const res = await fetch(`${baseUrl}/verify-reset-code/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ verification_code: code }),
@@ -351,7 +351,7 @@ const Login = () => {
     }
     setIsLoading(true);
     try {
-      const res = await fetch(`${baseUrl}reset-password/`, {
+      const res = await fetch(`${baseUrl}/reset-password/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -384,7 +384,7 @@ const Login = () => {
     }
     setIsLoading(true);
     try {
-      const res = await fetch(`${baseUrl}resend-code/`, {
+      const res = await fetch(`${baseUrl}/resend-code/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: user }),
@@ -421,7 +421,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${baseUrl}register/`, {
+      const response = await fetch(`${baseUrl}/register/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -459,7 +459,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${baseUrl}verify-email/`, {
+      const response = await fetch(`${baseUrl}/verify-email/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -504,7 +504,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${baseUrl}resend-code/`, {
+      const response = await fetch(`${baseUrl}/resend-code/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
