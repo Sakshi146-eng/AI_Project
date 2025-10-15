@@ -304,29 +304,29 @@ const Leaderboard = () => {
           'Authorization': `Bearer ${GROQ_API_KEY}`,
           'Content-Type': 'application/json',
         },
-       body: JSON.stringify({
-  model: 'llama-3.3-70b-versatile',
-  messages: [
-    {
-      role: 'system',
-      content: `You are an AI assistant helping an interviewer understand candidate interview data. Here is the complete candidate information:
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            {
+              role: 'system',
+              content: `You are an AI assistant helping an interviewer understand candidate interview data. Here is the complete candidate information:
 
 ${candidateContext}
 
 Answer questions about this candidate's interview performance, application details, scores, feedback, and status. Be concise, professional, and data-driven. If asked about specific scores or details, reference the exact values from the data. If information is not available, clearly state that.`
-    },
-    ...newMessages
-  ],
-  temperature: 0.7,
-  max_tokens: 1024,
-}),
+            },
+            ...newMessages
+          ],
+          temperature: 0.7,
+          max_tokens: 1024,
+        }),
       });
 
       if (!response.ok) {
-  const errorData = await response.json();
-  console.error('Groq API Error:', errorData);
-  throw new Error(errorData.error?.message || 'Failed to get AI response');
-}
+        const errorData = await response.json();
+        console.error('Groq API Error:', errorData);
+        throw new Error(errorData.error?.message || 'Failed to get AI response');
+      }
 
       const data = await response.json();
       const aiMessage = data.choices[0]?.message?.content || 'Sorry, I could not generate a response.';
@@ -613,7 +613,6 @@ Answer questions about this candidate's interview performance, application detai
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Dev</th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Resume</th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">DSA</th>
-                    
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                     </tr>
@@ -823,23 +822,23 @@ Answer questions about this candidate's interview performance, application detai
                   <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
                     <div className="flex gap-2 flex-wrap">
                       {['overview', 'questions', 'dsa', 'resume_conversations', 'images'].map((tab) => (
-  <button
-    key={tab}
-    onClick={() => setActiveTab(tab)}
-    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-      activeTab === tab
-        ? 'bg-blue-600 text-white shadow-md'
-        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-    }`}
-  >
-    {tab === 'overview' && <LayoutDashboard className="w-4 h-4" />}
-    {tab === 'questions' && <MessageSquare className="w-4 h-4" />}
-    {tab === 'dsa' && <FileCode className="w-4 h-4" />}
-    {tab === 'resume_conversations' && <BarChart2 className="w-4 h-4" />}
-    {tab === 'images' && <Eye className="w-4 h-4" />}
-    {tab.charAt(0).toUpperCase() + tab.slice(1).replace('_', ' ')}
-  </button>
-))}
+                        <button
+                          key={tab}
+                          onClick={() => setActiveTab(tab)}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                            activeTab === tab
+                              ? 'bg-blue-600 text-white shadow-md'
+                              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                          }`}
+                        >
+                          {tab === 'overview' && <LayoutDashboard className="w-4 h-4" />}
+                          {tab === 'questions' && <MessageSquare className="w-4 h-4" />}
+                          {tab === 'dsa' && <FileCode className="w-4 h-4" />}
+                          {tab === 'resume_conversations' && <BarChart2 className="w-4 h-4" />}
+                          {tab === 'images' && <Eye className="w-4 h-4" />}
+                          {tab.charAt(0).toUpperCase() + tab.slice(1).replace('_', ' ')}
+                        </button>
+                      ))}
                     </div>
                   </div>
 
@@ -867,18 +866,8 @@ Answer questions about this candidate's interview performance, application detai
                               <p className="text-sm text-gray-500 mb-2">Recommendation</p>
                               <p className="text-sm font-medium text-gray-900">{selectedCandidate.recommendation || "N/A"}</p>
                             </div>
-                            
                           </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 text-center shadow-sm">
-                        <Star className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-500 text-lg">No strengths available.</p>
-                      </div>
-                    )}
-                  </div>
-                )}
 
                         {/* Feedback */}
                         {selectedCandidate.feedback ? (
@@ -931,10 +920,10 @@ Answer questions about this candidate's interview performance, application detai
                                 <div className="flex justify-between items-start mb-4">
                                   <h5 className="text-lg font-medium text-gray-900">Question {index + 1}</h5>
                                   {item.score && (
-  <span className={`px-3 py-1 rounded-full text-sm font-medium border  ${(item.score)}`}>
-    {item.score.toFixed(1)}
-  </span>
-)}
+                                    <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getScoreColor(item.score)}`}>
+                                      {item.score.toFixed(1)}
+                                    </span>
+                                  )}
                                 </div>
                                 <div className="space-y-4">
                                   <div>
@@ -1000,7 +989,7 @@ Answer questions about this candidate's interview performance, application detai
                                     {dsa.topic?.topic} ({dsa.topic?.difficulty})
                                   </h5>
                                   {dsa.score && (
-                                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getScoreColor(dsa.score)}`}>
+                                    <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getScoreColor(dsa.score)}`}>
                                       {dsa.score.toFixed(1)}
                                     </span>
                                   )}
@@ -1054,7 +1043,7 @@ Answer questions about this candidate's interview performance, application detai
                                 <div className="flex justify-between items-start mb-4">
                                   <h5 className="text-lg font-medium text-gray-900">Conversation {index + 1}</h5>
                                   {conv.score && (
-                                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getScoreColor(conv.score)}`}>
+                                    <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getScoreColor(conv.score)}`}>
                                       {conv.score.toFixed(1)}
                                     </span>
                                   )}
@@ -1098,54 +1087,55 @@ Answer questions about this candidate's interview performance, application detai
                         )}
                       </div>
                     )}
+
                     {activeTab === 'images' && (
-  <div className="space-y-8">
-    <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-      <Eye className="w-5 h-5 text-purple-500" />
-      Interview Images
-    </h4>
-    {selectedCandidate.images && selectedCandidate.images.length > 0 ? (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {selectedCandidate.images.map((image, index) => (
-          <div key={index} className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300">
-            <div className="aspect-video bg-gray-100 relative overflow-hidden">
-              <img
-                src={image.image || image.image_url}
-                alt={`Interview capture ${index + 1}`}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                onError={(e) => {
-                  e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E';
-                }}
-              />
-            </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between text-sm text-gray-600">
-                <span className="flex items-center gap-1">
-                  
-                </span>
-              </div>
-              {image.description && (
-                <p className="mt-2 text-sm text-gray-700">{image.description}</p>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 text-center shadow-sm">
-        <Eye className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-        <p className="text-gray-500 text-lg">No images captured during this interview.</p>
-      </div>
-    )}
-  </div>
-)}
+                      <div className="space-y-8">
+                        <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                          <Eye className="w-5 h-5 text-purple-500" />
+                          Interview Images
+                        </h4>
+                        {selectedCandidate.images && selectedCandidate.images.length > 0 ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {selectedCandidate.images.map((image, index) => (
+                              <div key={index} className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300">
+                                <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                                  <img
+                                    src={image.image || image.image_url}
+                                    alt={`Interview capture ${index + 1}`}
+                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                    onError={(e) => {
+                                      e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E';
+                                    }}
+                                  />
+                                </div>
+                                <div className="p-4">
+                                  <div className="flex items-center justify-between text-sm text-gray-600">
+                                    <span className="flex items-center gap-1">
+                                      <Clock className="w-4 h-4" />
+                                      {formatDateTime(image.timestamp)}
+                                    </span>
+                                  </div>
+                                  {image.description && (
+                                    <p className="mt-2 text-sm text-gray-700">{image.description}</p>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 text-center shadow-sm">
+                            <Eye className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                            <p className="text-gray-500 text-lg">No images captured during this interview.</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* AI Chatbot Panel */}
                 {showChatbot && (
                   <div className="w-1/2 border-l border-gray-200 flex flex-col bg-gradient-to-br from-blue-50 to-purple-50">
-                 
                     <div className="px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Bot className="w-5 h-5" />
@@ -1549,9 +1539,7 @@ Answer questions about this candidate's interview performance, application detai
       </div>
       <Footer />
     </div>
-    <Footer />
-  </div>
-);
+  );
 };
 
 export default Leaderboard;
