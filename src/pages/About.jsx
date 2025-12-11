@@ -861,7 +861,7 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-x-hidden" style={{ fontFamily: 'Madefor, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-x-hidden" style={{ fontFamily: 'Madefor, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', WebkitOverflowScrolling: 'touch' }}>
       <Header />
       {/* Hero Section */}
       <section className="relative px-4 sm:px-8 lg:px-16 py-16 sm:py-24 lg:py-32 min-h-[90vh] flex items-center overflow-hidden">
@@ -1139,3 +1139,4 @@ const About = () => {
 };
 
 export default About;
+
