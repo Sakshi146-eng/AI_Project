@@ -5,10 +5,8 @@ import { Calendar, Clock, Users, Plus, Trash2, ChevronRight, ChevronLeft, Save, 
 import { getAuthToken } from '../utils/handleToken';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast} from 'react-toastify';
-
 const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const baseUrl = import.meta.env.VITE_API_URL;
-
 // Form Container Component
 const FormContainer = ({ children, isVisible = true }) => (
   <div className={`container mx-auto px-4 py-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
@@ -284,109 +282,128 @@ const QuestionsConfig = ({ onNext, onBack, formData, setFormData }) => {
     }));
   };
 
-  const generateQuestionsWithGroq = async () => {
-    if (!GROQ_API_KEY) {
-      toast.error('Groq API key not configured');
-      return;
-    }
+const generateQuestionsWithGroq = async () => {
+  if (!GROQ_API_KEY) {
+    toast.error('Groq API key not configured');
+    return;
+  }
 
-    setIsGenerating(true);
-    try {
-      const existingQuestions = formData.questions.map(q => q.question).join("\n");
-      const prompt = `
-Generate 1 new technical interview question for a ${formData.post} position with ${formData.experience} years of experience. 
-Job description: ${formData.desc}. 
+  setIsGenerating(true);
+
+  try {
+    const existingQuestions = formData.questions
+      .map((q) => q.question)
+      .join('\n');
+
+    const prompt = `Generate 1 new technical interview question for a ${formData.post} position with ${formData.experience} years of experience.
+
+Job description:
+${formData.desc}
 
 Do NOT repeat these questions:
 ${existingQuestions}
 
-Return ONLY JSON array of objects with 'question' and 'answer' fields.
+Return ONLY a JSON array of objects with "question" and "answer" fields.
+No markdown, no explanations.
 
-Example format:
+Example:
 [
   {
     "question": "What is the difference between let and var in JavaScript?",
-    "answer": "let has block scope while var has function scope. let variables cannot be redeclared in the same scope."
+    "answer": "let has block scope while var has function scope."
   }
 ]`;
 
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const response = await fetch(
+      'https://api.groq.com/openai/v1/chat/completions',
+      {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${GROQ_API_KEY}`,
+          Authorization: `Bearer ${GROQ_API_KEY}`,
         },
         body: JSON.stringify({
           model: 'llama-3.3-70b-versatile',
-          messages: [{
-            role: 'user',
-            content: prompt
-          }],
+          messages: [
+            {
+              role: 'system',
+              content:
+                'You are a technical interview question generator. Always respond with a valid JSON array only. No markdown or extra text.',
+            },
+            {
+              role: 'user',
+              content: prompt,
+            },
+          ],
           temperature: 0.7,
           max_tokens: 2048,
-        })
-      });
+        }),
+      }
+    );
 
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-        throw new Error('Invalid response format from Groq API');
-      }
-      
-      const generatedText = data.choices[0].message.content;
-      
-      let cleanedText = generatedText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-      
-      let jsonMatch = cleanedText.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) {
-        const firstBracket = cleanedText.indexOf('[');
-        const lastBracket = cleanedText.lastIndexOf(']');
-        if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
-          cleanedText = cleanedText.substring(firstBracket, lastBracket + 1);
-        }
-      } else {
-        cleanedText = jsonMatch[0];
-      }
-      
-      try {
-        const questions = JSON.parse(cleanedText);
-        if (Array.isArray(questions) && questions.length > 0) {
-          const validQuestions = questions.filter(q => 
-            q && typeof q === 'object' && 
-            typeof q.question === 'string' && 
-            typeof q.answer === 'string' &&
-            q.question.trim() !== '' && 
-            q.answer.trim() !== ''
-          );
-          
-          if (validQuestions.length > 0) {
-            setFormData(prev => ({
-              ...prev,
-              questions: [...prev.questions, ...validQuestions.slice(0, 1)]
-            }));
-            toast.success(`Successfully generated and added 1 question!`);
-          } else {
-            throw new Error('No valid questions found in response');
-          }
-        } else {
-          throw new Error('Response is not a valid array of questions');
-        }
-      } catch (parseError) {
-        console.error('JSON parsing error:', parseError);
-        console.error('Cleaned text:', cleanedText);
-        throw new Error('Failed to parse generated questions. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error generating questions:', error);
-      toast.error(`Failed to generate questions: ${error.message}. Please add them manually.`);
-    } finally {
-      setIsGenerating(false);
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(
+        err?.error?.message || `Groq API failed (${response.status})`
+      );
     }
-  };
+
+    const data = await response.json();
+
+    if (!data?.choices?.[0]?.message?.content) {
+      throw new Error('Invalid response format from Groq API');
+    }
+
+    let cleanedText = data.choices[0].message.content
+      .replace(/```json\s*/g, '')
+      .replace(/```\s*/g, '')
+      .trim();
+
+    const match = cleanedText.match(/\[[\s\S]*\]/);
+    if (!match) {
+      throw new Error('No valid JSON array found in response');
+    }
+
+    cleanedText = match[0];
+
+    let questions;
+    try {
+      questions = JSON.parse(cleanedText);
+    } catch (parseError) {
+      console.error('JSON parse error:', cleanedText);
+      throw new Error('Failed to parse JSON from Groq response');
+    }
+
+    if (!Array.isArray(questions) || questions.length === 0) {
+      throw new Error('No questions generated');
+    }
+
+    const validQuestions = questions.filter(
+      (q) =>
+        q &&
+        typeof q.question === 'string' &&
+        typeof q.answer === 'string' &&
+        q.question.trim() &&
+        q.answer.trim()
+    );
+
+    if (!validQuestions.length) {
+      throw new Error('Generated questions are invalid');
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      questions: [...prev.questions, validQuestions[0]],
+    }));
+
+    toast.success('Successfully generated and added 1 question!');
+  } catch (error) {
+    console.error('Error generating questions:', error);
+    toast.error(`Failed to generate questions: ${error.message}`);
+  } finally {
+    setIsGenerating(false);
+  }
+};
 
   return (
     <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
@@ -434,14 +451,13 @@ Example format:
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-semibold text-gray-900">Development Questions ({formData.Dev}%)</h3>
             <div className="flex space-x-3">
-              <button
-                onClick={generateQuestionsWithGroq}
-                disabled={isGenerating}
-                className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-2xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 disabled:opacity-50 flex items-center space-x-2 shadow-lg"
-              >
-                <Brain className="w-5 h-5" />
-                <span>{isGenerating ? 'Generating...' : 'Generate with AI'}</span>
-              </button>
+              <button onClick={generateQuestionsWithGroq}  // Changed from generateQuestionsWithGemini
+  disabled={isGenerating}
+  className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-2xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 disabled:opacity-50 flex items-center space-x-2 shadow-lg"
+>
+  <Brain className="w-5 h-5" />
+  <span>{isGenerating ? 'Generating...' : 'Generate with AI'}</span>
+</button>
               <button
                 onClick={handleAddQuestion}
                 className="px-6 py-3 bg-purple-600 text-white rounded-2xl hover:bg-purple-700 transition-colors flex items-center space-x-2 font-semibold shadow-lg"

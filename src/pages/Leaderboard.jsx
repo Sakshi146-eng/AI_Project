@@ -11,7 +11,8 @@ import { Bar, Pie, Line, Doughnut } from 'react-chartjs-2';
 import Header from "../components/ui/header";
 import Footer from "../components/ui/footer";
 import { getAuthToken } from "../utils/handleToken";
-
+import ImageModal from "../../src/pages/ImageModal"
+import Appp from "../../src/pages/ImageModal"
 ChartJS.register(...registerables);
 
 const Leaderboard = () => {
@@ -61,6 +62,7 @@ const Leaderboard = () => {
       }
 
       const data = await response.json();
+      console.log("Leaderboard Data:", data[0].images);
       setLeaderboardData(Array.isArray(data) ? data : data.data || []);
       setLoading(false);
     } catch (err) {
@@ -366,7 +368,7 @@ Answer questions about this candidate's interview performance, application detai
   });
 
   const sortedData = [...filteredData].sort((a, b) => getEffectiveScore(b) - getEffectiveScore(a));
-
+console.log("Sorted Data:", sortedData);
   // Chart configurations with interactive tooltips
   const chartOptions = {
     responsive: true,
@@ -619,6 +621,7 @@ Answer questions about this candidate's interview performance, application detai
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {sortedData.map((candidate, index) => (
+                  
                       <tr
                         key={candidate.id}
                         className={`hover:bg-gray-50 transition-colors ${index < 3 ? "bg-gradient-to-r from-yellow-50/50 to-transparent" : ""}`}
@@ -649,7 +652,6 @@ Answer questions about this candidate's interview performance, application detai
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-3 py-1 rounded-full text-sm font-bold border ${getScoreColor(candidate.Devscore)}`}>
-                            {typeof candidate.Devscore === 'number' ? candidate.Devscore.toFixed(1) : '0'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -663,7 +665,7 @@ Answer questions about this candidate's interview performance, application detai
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(candidate.status)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        {/* <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleViewDetails(candidate)}
@@ -679,8 +681,31 @@ Answer questions about this candidate's interview performance, application detai
                             >
                               <FileText className="w-4 h-4" />
                             </button>
+                            <button>
+                           <Appp image={candidate.images[0]} />
+                            </button>
                           </div>
-                        </td>
+                        </td> */}
+                        <td className="px-6 py-4 whitespace-nowrap">
+  <div className="flex gap-2">
+    <button
+      onClick={() => handleViewDetails(candidate)}
+      className="text-blue-600 hover:text-blue-800 p-2 hover:bg-blue-50 rounded-lg transition-colors border border-blue-200 hover:border-blue-300"
+    >
+      <Eye className="w-4 h-4" />
+    </button>
+    <button
+      onClick={() => handleViewApplication(candidate.Application)}
+      className="text-green-600 hover:text-green-800 p-2 hover:bg-green-50 rounded-lg transition-colors border border-green-200 hover:border-green-300"
+    >
+      <FileText className="w-4 h-4" />
+    </button>
+    {/* Access the first image from the images array */}
+    {candidate.images && candidate.images.length > 0 && (
+      <ImageModal image={candidate.images[0]} />
+    )}
+  </div>
+</td>
                       </tr>
                     ))}
                   </tbody>
